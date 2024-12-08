@@ -47,7 +47,7 @@ image_size = 256
 
 # data loading
 default_transform = transforms.Compose([
-    transforms.Resize((image_size, image_size)),
+    transforms.Resize((1500, 1000)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
