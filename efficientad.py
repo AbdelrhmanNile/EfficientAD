@@ -43,7 +43,7 @@ def get_argparse():
 seed = 42
 on_gpu = torch.cuda.is_available()
 out_channels = 384
-image_size =  256
+image_size =  512
 
 # data loading
 default_transform = transforms.Compose([
@@ -191,6 +191,9 @@ def main():
             teacher_output_ae = teacher(image_ae)
             teacher_output_ae = (teacher_output_ae - teacher_mean) / teacher_std
         student_output_ae = student(image_ae)[:, out_channels:]
+        print(student_output_ae.shape)
+        print(ae_output.shape)
+        print(teacher_output_ae.shape)
         distance_ae = (teacher_output_ae - ae_output)**2
         distance_stae = (ae_output - student_output_ae)**2
         loss_ae = torch.mean(distance_ae)
