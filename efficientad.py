@@ -176,7 +176,7 @@ def main():
             teacher_output_st = (teacher_output_st - teacher_mean) / teacher_std
         student_output_st = student(image_st)[:, :out_channels]
         distance_st = (teacher_output_st - student_output_st) ** 2
-        d_hard = torch.tensor(np.quantile(distance_st.detach().cpu().numpy(), q=0.999))
+        d_hard = torch.quantile(distance_st, q=0.999)
         loss_hard = torch.mean(distance_st[distance_st >= d_hard])
 
         if image_penalty is not None:
