@@ -43,7 +43,7 @@ def get_argparse():
 seed = 42
 on_gpu = torch.cuda.is_available()
 out_channels = 384
-image_size =  512
+image_size =  1024
 
 # data loading
 default_transform = transforms.Compose([
@@ -176,7 +176,8 @@ def main():
             teacher_output_st = (teacher_output_st - teacher_mean) / teacher_std
         student_output_st = student(image_st)[:, :out_channels]
         distance_st = (teacher_output_st - student_output_st) ** 2
-        d_hard = torch.quantile(distance_st, q=0.999)
+        #d_hard = torch.quantile(distance_st, q=0.999)
+        d_hard = torch.tensor(np.quantile(distance_st.cpu().numpy(), q=0.999))
         loss_hard = torch.mean(distance_st[distance_st >= d_hard])
 
         if image_penalty is not None:
@@ -191,9 +192,6 @@ def main():
             teacher_output_ae = teacher(image_ae)
             teacher_output_ae = (teacher_output_ae - teacher_mean) / teacher_std
         student_output_ae = student(image_ae)[:, out_channels:]
-        print(student_output_ae.shape)
-        print(ae_output.shape)
-        print(teacher_output_ae.shape)
         distance_ae = (teacher_output_ae - ae_output)**2
         distance_stae = (ae_output - student_output_ae)**2
         loss_ae = torch.mean(distance_ae)
